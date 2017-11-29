@@ -1,0 +1,43 @@
+# TO READ:
+# https://medium.com/@andyccs/webpack-and-docker-for-development-and-deployment-ae0e73243db4
+
+
+
+
+
+# Build
+# docker build -f node.dockerfile -t base-node .
+
+# Run Template
+# docker run -i -t -p 3000:3000 -v $(PWD):/var/www base-node <COMMAND HERE>
+
+# Setup directory structure
+# mkdir webpack-demo && cd webpack-demo
+# touch index.html
+# mkdir src && touch src/index.js
+# touch webpack.config.js
+
+# Initialize a Node Project
+# docker run -i -t -v $(PWD):/var/www base-node npm init -y
+
+# Install webpack
+ # docker run -i -t -v $(PWD):/var/www base-node npm install --save-dev webpack
+
+# Webpack bundle by command line
+# docker run -i -t -v $(PWD):/var/www base-node ./node_modules/.bin/webpack src/index.js dist/bundle.js
+
+#     OR 
+
+# Webpack bundle w/ Config file
+# docker run -i -t -v $(PWD):/var/www base-node ./node_modules/.bin/webpack --config webpack.config.js
+
+#     OR
+
+# docker run -i -t -v $(PWD):/var/www base-node npm run build
+ 
+# Install loaders for web development
+# docker run -i -t -v $(PWD):/var/www base-node npm install --save-dev style-loader css-loader file-loader
+
+
+#
+# docker run -i -t -v $(PWD):/var/www base-node npm install --save-dev html-webpack-plugin clean-webpack-plugin
