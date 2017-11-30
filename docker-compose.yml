@@ -1,0 +1,19 @@
+version: '2'
+services:
+  react-node-aws: 
+    build: 
+      context: .
+      dockerfile: .docker/react.node.aws.dockerfile
+    env_file:
+      - .secrets/secrets.env
+    volumes: 
+      - .:/var/www
+    ports:
+      - "3000:3000"
+    command: npm start
+
+
+# docker-compose build
+# docker-compose run 
+# docker-compose run react-node-aws aws --version
+
