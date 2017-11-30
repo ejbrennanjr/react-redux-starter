@@ -23,7 +23,7 @@ RUN pip install awscli --upgrade --user
 
 
 # Build
-# docker build -f .docker/aws.dockerfile -t awscli .
+# docker build -f .docker/awscli.dockerfile -t awscli .
 
 # Run
-# docker run -p 3000:3000 -v $(PWD):/var/www awscli    
+# docker run --env-file .secrets/secrets.env -v $(PWD):/var/www awscli    

@@ -2,6 +2,23 @@
 # https://medium.com/@andyccs/webpack-and-docker-for-development-and-deployment-ae0e73243db4
 
 
+-----------------------------------------------------------------------------
+Docker Commands
+-----------------------------------------------------------------------------
+
+# Remove everything defined in the YML file
+docker-compose down --rmi all --volumes
+
+# Remove all exited containers
+docker rm $(docker ps -a -f status=exited -q)
+
+# Connect to running container
+docker exec -i -t <Running Container Id> /bin/bash
+
+
+
+
+
 
 
 
