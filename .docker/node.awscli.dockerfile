@@ -5,10 +5,6 @@ RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - && \
     apt-get update && \
     apt-get install -y nodejs
 
-# utility needed to monitor and restart node processes
-RUN npm install -g nodemon
-
-
 # Build
 # docker build -f .docker/node.awscli.dockerfile -t node-awscli .
 

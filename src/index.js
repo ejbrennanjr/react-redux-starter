@@ -1,1 +1,4 @@
-console.log('hi');
+
+/* eslint-disable no-console */
+
+console.log('Blue Dog');
