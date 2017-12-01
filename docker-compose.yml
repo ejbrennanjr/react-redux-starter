@@ -1,9 +1,9 @@
 version: '2'
 services:
-  react-node-aws: 
+  react-node-awscli: 
     build: 
       context: .
-      dockerfile: .docker/react.node.aws.dockerfile
+      dockerfile: .docker/react.node.awscli.dockerfile
     env_file:
       - .secrets/secrets.env
     volumes: 
@@ -15,5 +15,5 @@ services:
 
 # docker-compose build
 # docker-compose run 
-# docker-compose run react-node-aws aws --version
+# docker-compose run react-node-awscli aws --version
 
