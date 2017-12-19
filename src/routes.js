@@ -3,6 +3,8 @@ import { Route, IndexRoute } from 'react-router';
 import App from './components/App';
 import HomePage from './components/home/HomePage';
 import AboutPage from './components/about/AboutPage';
+import FriendsPage from './components/friend/FriendsPage';
+import ManageFriendPage from './components/friend/ManageFriendPage';
 
 
 // App Component will always be loaded
@@ -12,6 +14,9 @@ import AboutPage from './components/about/AboutPage';
 export default (
     <Route path="/" component={App}>
         <IndexRoute component={HomePage} />
+        <Route path="friends" component={FriendsPage} />
+        <Route path="friend" component={ManageFriendPage} />
+        <Route path="friend/:id" component={ManageFriendPage} />
         <Route path="about" component={AboutPage} />
     </Route>
 );
