@@ -12,12 +12,39 @@ docker-compose down --rmi all --volumes
 # Remove all exited containers
 docker rm $(docker ps -a -f status=exited -q)
 
-# Start contain into bash
+# Start container into bash
 docker run -it react-node-awscli bash
 
 # Connect to running container
 docker exec -i -t <Running Container Id> /bin/bash
 
+# Docker Commands to Clean-up Space Issues
+docker rm $(docker ps -q -f 'status=exited')
+docker rmi $(docker images -q -f "dangling=true")
+docker volume rm $(docker volume ls -qf dangling=true)
+
+# More Space Issues?
+# This link discusses looking @ Docker.qcow2 size
+# Concern is if you delete this file it removes all images and they need to be rebuilt.
+#      https://forums.docker.com/t/no-space-left-on-device-error/10894/2
+ls -lah ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/Docker.qcow2
+rm ~/Library/Containers/com.docker.docker/Data/com.docker. driver.amd64-linux/Docker.qcow2
+# must restart docker
+
+-----------------------------------------------------------------------------------
+AWS CloudFormation Notes:
+-----------------------------------------------------------------------------------
+# Create Stack
+aws cloudformation create-stack --stack-name beagle-stack \
+--template-body file://aws-cf.json \
+--capabilities CAPABILITY_NAMED_IAM
+
+# Describe Stack 
+Shows status of a stack 
+aws cloudformation describe-stacks
+
+# Delete Stack
+aws cloudformation delete-stack --stack-name beagle-stack
 
 
 
