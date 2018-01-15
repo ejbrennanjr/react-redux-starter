@@ -7,5 +7,7 @@ phases:
       - npm run build
 artifacts:
   files:
-    - src/index.html
-    - dist/bundle.js
+    - index.html
+    - styles.css
+    - styles.css.map
+    - bundle.js
