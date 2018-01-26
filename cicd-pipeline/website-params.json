@@ -1,6 +1,15 @@
-[
-    {
-        "ParameterKey": "AppName",
-        "ParameterValue": "react-redux-serverless"
+{
+    "Parameters" : {
+      "AppName" : "react-redux-serverles"
+    },
+    "StackPolicy" : {
+      "Statement" : [
+        {
+          "Effect" : "Allow",
+          "NotAction" : "Update:Delete",
+          "Principal": "*",
+          "Resource" : "*"
+        }
+      ]
     }
-]
+  }

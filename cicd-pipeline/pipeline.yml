@@ -203,7 +203,7 @@
                 Version: 1
                 Provider: GitHub
               OutputArtifacts:
-              - Name: !Sub '${AppName}-sourceoutput-codepipeline-${AWS::Region}'
+              - Name: sourceoutput
               Configuration:
                 Owner: !Ref GitHubUser
                 Repo: !Ref GitHubRepo
@@ -213,14 +213,14 @@
             Actions:
             - Name: Build
               InputArtifacts:
-              - Name: !Sub '${AppName}-sourceoutput-codepipeline-${AWS::Region}' 
+              - Name: sourceoutput 
               ActionTypeId:
                 Category: Build
                 Owner: AWS
                 Version: 1
                 Provider: CodeBuild
               OutputArtifacts:
-              - Name: !Sub '${AppName}-buildoutput-codepipeline-${AWS::Region}'
+              - Name: buildoutput
               Configuration:
                 ProjectName: !Sub '${AppName}-website-codebuild-${AWS::Region}'
               RunOrder: 1
@@ -228,7 +228,7 @@
             Actions:
             - Name: create-changeset
               InputArtifacts:
-              - Name: !Sub '${AppName}-sourceoutput-codepipeline-${AWS::Region}'
+              - Name: sourceoutput
               ActionTypeId:
                 Category: Deploy
                 Owner: AWS
@@ -241,8 +241,8 @@
                 RoleArn: !Sub '${CloudFormationTrustRole.Arn}'
                 ChangeSetName: pipeline-changeset
                 Capabilities: CAPABILITY_NAMED_IAM
-                TemplatePath: !Sub "${AppName}-sourceoutput-codepipeline-${AWS::Region}::.aws/website.cfm.yml"
-                TemplateConfiguration: !Sub "${AppName}-sourceoutput-codepipeline-${AWS::Region}::.aws/website-params.json"
+                TemplatePath: sourceoutput::cicd-pipeline/website.cfm.yml
+                TemplateConfiguration: sourceoutput::cicd-pipeline/website-params.json
               RunOrder: 1
             - Name: execute-changeset
               InputArtifacts: []

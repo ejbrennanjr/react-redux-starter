@@ -17,9 +17,9 @@
     "prebuild": "npm-run-all clean-dist lint build:html",
     "build": "babel-node tools/build.js",
     "start-prod": "babel-node tools/distServer.js",
-    "create-stack": "aws cloudformation create-stack --stack-name react-redux-serverless-stack --template-body file://.aws/pipeline.yml --parameters file://.aws/pipeline-params.json --capabilities CAPABILITY_NAMED_IAM",
+    "create-stack": "aws cloudformation create-stack --stack-name react-redux-serverless-stack --template-body file://cicd-pipeline/pipeline.yml --parameters file://cicd-pipeline/pipeline-params.json --capabilities CAPABILITY_NAMED_IAM",
     "delete-stack": "aws cloudformation delete-stack --stack-name react-redux-serverless-stack",
-    "aws:cfm:createWebsite": "aws cloudformation create-stack --stack-name react-redux-serverless-website-stack --template-body file://.aws/website.yml --parameters file://.aws/website-params.json --capabilities CAPABILITY_NAMED_IAM",
+    "aws:cfm:createWebsite": "aws cloudformation create-stack --stack-name react-redux-serverless-website-stack --template-body file://cicd-pipeline/website.yml --parameters file://cicd-pipeline/website-params.json --capabilities CAPABILITY_NAMED_IAM",
     "aws:cfm:deleteWebsite": "aws cloudformation delete-stack --stack-name react-redux-serverless-website-stack"
   },
   "keywords": [],
