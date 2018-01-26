@@ -18,16 +18,12 @@
     "build": "babel-node tools/build.js",
     "start-prod": "babel-node tools/distServer.js",
     "create-stack": "aws cloudformation create-stack --stack-name react-redux-serverless-stack --template-body file://.aws/pipeline.yml --parameters file://.aws/pipeline-params.json --capabilities CAPABILITY_NAMED_IAM",
-    "delete-stack": "aws cloudformation delete-stack --stack-name react-redux-serverless-stack",
-    "aws:cfm:createWebsite": "aws cloudformation create-stack --stack-name react-redux-serverless-website-stack --template-body file://.aws/website.yml --parameters file://.aws/website-params.json --capabilities CAPABILITY_NAMED_IAM",
-    "aws:cfm:deleteWebsite": "aws cloudformation delete-stack --stack-name react-redux-serverless-website-stack"
+    "delete-stack": "aws cloudformation delete-stack --stack-name react-redux-serverless-stack"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "adm-zip": "^0.4.7",
-    "aws-sdk": "^2.32.0",  
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
