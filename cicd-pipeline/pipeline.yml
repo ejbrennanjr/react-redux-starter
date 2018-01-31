@@ -150,7 +150,7 @@ Resources:
           # Making the presumption of the name here based on the naming convention we have established
           Value: !Sub '${AppName}-website-s3-${AWS::Region}'
       Source:
-        BuildSpec: ./cicd-pipeline/buildspec-deploy.yml
+        BuildSpec: cicd-pipeline/buildspec-deploy.yml
       Name: !Sub '${AppName}-deploytos3-codebuild-${AWS::Region}'
       ServiceRole: !Sub '${CodeBuildIAMRole.Arn}'
       Source: 
@@ -384,8 +384,7 @@ Resources:
               Owner: AWS
               Version: 1
               Provider: CodeBuild
-            OutputArtifacts:
-            - Name: buildoutput
+            OutputArtifacts: []
             Configuration:
               ProjectName: !Sub '${AppName}-deploytos3-codebuild-${AWS::Region}'
             RunOrder: 3
