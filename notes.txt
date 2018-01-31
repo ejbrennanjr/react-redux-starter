@@ -2,6 +2,8 @@
 # https://medium.com/@andyccs/webpack-and-docker-for-development-and-deployment-ae0e73243db4
 # https://rgfindl.github.io/2017/08/07/static-website-cloudformation-template/
 # https://www.dadoune.com/blog/aws-codepipeline-cloudbuild-static-s3-website/
+# https://github.com/wearehive/project-guidelines
+
 -----------------------------------------------------------------------------
 Docker Commands
 -----------------------------------------------------------------------------

@@ -1,0 +1,9 @@
+version: 0.2
+
+phases:
+  post_build:
+    commands:
+      - echo Syncing files between S3 $S3ArtifactBucketName Bucket and $S3WebsiteBucketName Bucket
+      - aws s3 sync s3://$S3ArtifactBucketName s3://$S3WebsiteBucketName
+
+
