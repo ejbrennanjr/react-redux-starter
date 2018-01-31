@@ -125,8 +125,9 @@ Resources:
         Type: 'LINUX_CONTAINER'
       Name: !Sub '${AppName}-compilewebsite-codebuild-${AWS::Region}'
       ServiceRole: !Sub '${CodeBuildIAMRole.Arn}'
-      Source: 
-        Type: 'CODEPIPELINE'
+      Source:
+        BuildSpec: buildspec.yml
+        Type: CODEPIPELINE
       TimeoutInMinutes: 5
   CodeBuildDeployToS3:
     DependsOn:
@@ -151,10 +152,9 @@ Resources:
           Value: !Sub '${AppName}-website-s3-${AWS::Region}'
       Source:
         BuildSpec: cicd-pipeline/buildspec-deploy.yml
+        Type: CODEPIPELINE
       Name: !Sub '${AppName}-deploytos3-codebuild-${AWS::Region}'
       ServiceRole: !Sub '${CodeBuildIAMRole.Arn}'
-      Source: 
-        Type: 'CODEPIPELINE'
       TimeoutInMinutes: 5
 
 
@@ -378,7 +378,7 @@ Resources:
             RunOrder: 2
           - Name: DeployToS3Website
             InputArtifacts:
-            - Name: buildoutput 
+            - Name: sourceoutput 
             ActionTypeId:
               Category: Build
               Owner: AWS
