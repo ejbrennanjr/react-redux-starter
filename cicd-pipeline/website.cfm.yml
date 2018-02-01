@@ -1,5 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Website Stack'
+# https://hackernoon.com/hosting-static-react-websites-on-aws-s3-cloudfront-with-ssl-924e5c134455
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/quickref-s3.html
 Parameters: 
   AppName: 
@@ -13,7 +14,7 @@ Resources:
       BucketName: !Sub '${AppName}-website-s3-${AWS::Region}'   
       WebsiteConfiguration:
         IndexDocument: index.html
-        #ErrorDocument: error.html
+        ErrorDocument: index.html
     #DeletionPolicy: Retain
   BucketPolicy:
     Type: 'AWS::S3::BucketPolicy'
