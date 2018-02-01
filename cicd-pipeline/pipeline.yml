@@ -152,7 +152,7 @@ Resources:
           # Making the presumption of the name here based on the naming convention we have established
           Value: !Sub '${AppName}-website-s3-${AWS::Region}'
       Source:
-        BuildSpec: cicd-pipeline/buildspec-deploy.yml
+        BuildSpec: buildspec-deploy.yml
         Type: CODEPIPELINE
       Name: !Sub '${AppName}-deploytos3-codebuild-${AWS::Region}'
       ServiceRole: !Sub '${CodeBuildIAMRole.Arn}'
@@ -361,8 +361,8 @@ Resources:
               RoleArn: !Sub '${CloudFormationIAMRole.Arn}'
               ChangeSetName: pipeline-changeset
               Capabilities: CAPABILITY_NAMED_IAM
-              TemplatePath: buildoutput::cicd-pipeline/website.cfm.yml
-              TemplateConfiguration: buildoutput::cicd-pipeline/website-params.json
+              TemplatePath: buildoutput::website.cfm.yml
+              TemplateConfiguration: buildoutput::website-params.json
             RunOrder: 1
           - Name: ExecuteChangeSet
             InputArtifacts: []
