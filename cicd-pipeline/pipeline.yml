@@ -106,6 +106,7 @@ Resources:
                 - s3:PutObject
                 - s3:GetObject
                 - s3:GetObjectVersion
+                - s3:ListBucket
                 Effect: Allow
                 Resource: 
                 - arn:aws:s3:::codepipeline-us-east-1-*
@@ -347,7 +348,7 @@ Resources:
           Actions:
           - Name: CreateChangeSet
             InputArtifacts:
-            - Name: sourceoutput
+            - Name: buildoutput
             ActionTypeId:
               Category: Deploy
               Owner: AWS
@@ -360,8 +361,8 @@ Resources:
               RoleArn: !Sub '${CloudFormationIAMRole.Arn}'
               ChangeSetName: pipeline-changeset
               Capabilities: CAPABILITY_NAMED_IAM
-              TemplatePath: sourceoutput::cicd-pipeline/website.cfm.yml
-              TemplateConfiguration: sourceoutput::cicd-pipeline/website-params.json
+              TemplatePath: buildoutput::cicd-pipeline/website.cfm.yml
+              TemplateConfiguration: buildoutput::cicd-pipeline/website-params.json
             RunOrder: 1
           - Name: ExecuteChangeSet
             InputArtifacts: []
@@ -378,7 +379,7 @@ Resources:
             RunOrder: 2
           - Name: DeployToS3Website
             InputArtifacts:
-            - Name: sourceoutput 
+            - Name: buildoutput 
             ActionTypeId:
               Category: Build
               Owner: AWS

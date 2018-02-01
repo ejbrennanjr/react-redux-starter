@@ -1,4 +1,4 @@
-version: 0.1
+version: 0.2
 
 phases:
   build:
@@ -11,3 +11,10 @@ artifacts:
     - dist/styles.css
     - dist/styles.css.map
     - dist/bundle.js
+    # The files in cicd-pipeline are not part of the website. 
+    # They are needed for the CodePipeline Deploy step.  
+    # All cicd-pipeline files will be excluded in the sync to the S3 Static Website.
+    - cicd-pipeline/buildspec-deploy.yml
+    - cicd-pipeline/website.cfm.yml
+    - cicd-pipeline/website-params.json    
+  discard-paths: yes
