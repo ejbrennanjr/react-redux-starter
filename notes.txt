@@ -3,6 +3,8 @@
 # https://rgfindl.github.io/2017/08/07/static-website-cloudformation-template/
 # https://www.dadoune.com/blog/aws-codepipeline-cloudbuild-static-s3-website/
 # https://github.com/wearehive/project-guidelines
+# https://www.airpair.com/docker/posts/efficiant-development-workfow-using-git-submodules-and-docker-compose
+
 
 -----------------------------------------------------------------------------
 Docker Commands
