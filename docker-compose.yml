@@ -17,3 +17,4 @@ services:
 # docker-compose run --rm --service-ports react-node-awscli npm run build
 # docker-compose run react-node-awscli aws --version
 
+# docker-compose run --rm --service-ports react-node-awscli aws cloudformation create-stack --stack-name clf-s3-website-stack --template-body file://cicd-pipeline/website.cfm.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=RootDomainName,ParameterValue=edbrennan.guru

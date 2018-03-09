@@ -19,11 +19,35 @@ export function updateFriendSuccess(friend) {
 export function loadFriends() {
     return function(dispatch) {
         dispatch(beginAjaxCall());        
-        return friendApi.getAllFriends().then(friends => {
-            dispatch(loadFriendsSuccess(friends));
-        }).catch(error => {
-            throw(error);
-        });
+        return friendApi.getAllFriends()
+          .then(response => {
+            return response.json();
+          })
+          .then(jsondata => {
+            dispatch(loadFriendsSuccess(jsondata));
+          })
+          .catch(error => {
+            alert(`Caught Error=${error}`);
+            throw(error); 
+          })
+
+
+            // .then(response => {
+            //     alert(JSON.stringify(response))
+            //     //dispatch(loadFriendsSuccess(response.data))
+
+            // })
+            // .catch(error => {
+            //    
+            // });
+
+
+        // return friendApi.getAllFriends().then(friends => {
+        //     alert(JSON.stringify(friends))
+        //     dispatch(loadFriendsSuccess(friends));
+        // }).catch(error => {
+        //     throw(error);
+        // });
     };
 }
 

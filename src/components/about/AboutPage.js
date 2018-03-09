@@ -5,7 +5,7 @@ class AboutPage extends React.Component {
         return (
             <div>
                 <h1>About</h1>
-                <p>This application uses React, Redux, React Router, S3</p>
+                <p>This application uses React, Redux, React Router, S3, API Gateway, Lambda</p>
             </div>
         );
     }    

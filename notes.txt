@@ -4,6 +4,13 @@
 # https://www.dadoune.com/blog/aws-codepipeline-cloudbuild-static-s3-website/
 # https://github.com/wearehive/project-guidelines
 # https://www.airpair.com/docker/posts/efficiant-development-workfow-using-git-submodules-and-docker-compose
+# https://stackoverflow.com/questions/14418352/ignore-new-commits-for-git-submodule
+# https://www.thegeekstuff.com/2016/04/docker-compose-up-stop-rm/
+# https://serverless.com/blog/api-gateway-multiple-services/
+# https://github.com/awslabs/serverless-application-model/issues/119
+# https://github.com/awslabs/serverless-application-model/issues/106
+    # https://github.com/jolexa/aws-apigw-acm/blob/master/apigw-lambdas.yml
+
 
 
 -----------------------------------------------------------------------------
@@ -51,10 +58,11 @@ aws cloudformation describe-stacks
 aws cloudformation delete-stack --stack-name beagle-stack
 
 
+# URL to list of aws service attributes available in ClouFormation
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-getatt.html
 
-
-
-
+# URL to great !Sub reference
+http://www.fischco.org/technica/2017/cloud-formation-sub/
 
 # Build
 # docker build -f node.dockerfile -t base-node .
@@ -92,3 +100,5 @@ aws cloudformation delete-stack --stack-name beagle-stack
 
 #
 # docker run -i -t -v $(PWD):/var/www base-node npm install --save-dev html-webpack-plugin clean-webpack-plugin
+
+#docker-compose run --rm --service-ports react-node-awscli aws cloudformation create-stack --stack-name clf-s3-website-stack --template-body file://cicd-pipeline/website.cfm.yml --parameters ParameterKey=RootDomainName,ParameterValue=edbrennan.guru --capabilities CAPABILITY_NAMED_IAM

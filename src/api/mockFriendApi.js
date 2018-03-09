@@ -6,7 +6,7 @@ import delay from './delay';
 const friends = [
   {
     id: "Augie-Chung",
-    name: "Augie Chung",
+    name: "Augie Chung1",
     categoryId: "friends"
   },
   {
@@ -32,11 +32,29 @@ const generateId = (friend) => {
 
 class FriendApi {
   static getAllFriends() {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve(Object.assign([], friends));
-      }, delay);
-    });
+
+    return fetch('https://api.edbrennan.guru/friends', {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      }
+    })
+      // .then(response => {
+      //   return response.json();
+      // })
+      // .then(jsondata => console.log(jsondata))
+      // .catch(error => {
+      //   alert(`Caught Error=${error}`);
+      // })
+
+
+
+    // return new Promise((resolve, reject) => {
+    //   setTimeout(() => {
+    //     resolve(Object.assign([], friends));
+    //   }, delay);
+    // });
+
   }
 
   static saveFriend(friend) {

@@ -3,20 +3,82 @@ Description: 'Website Stack'
 # https://hackernoon.com/hosting-static-react-websites-on-aws-s3-cloudfront-with-ssl-924e5c134455
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/quickref-s3.html
 Parameters: 
-  AppName: 
-    Description: 'The name of the application'
-    Type: String 
+  RootDomainName:
+    Description: Domain name for your website (example.com)
+    Type: String
+
+Mappings:
+  RegionMap:
+    us-east-1:
+      S3hostedzoneID: Z3AQBSTGFYJSTF
+      S3websiteendpoint: s3-website-us-east-1.amazonaws.com
+      CFhostedzoneID: Z2FDTNDATAQYW2
+      CFwebsiteendpoint: cloudhsmv2.us-east-1.amazonaws.com
+    us-east-2:
+      S3hostedzoneID: Z2O1EMRO9K5GLX
+      S3websiteendpoint: s3-website.us-east-2.amazonaws.com
+      CFhostedzoneID: Z2FDTNDATAQYW2
+      CFwebsiteendpoint: cloudhsmv2.us-east-2.amazonaws.com     
+    us-west-1:
+      S3hostedzoneID: Z2F56UZL2M1ACD
+      S3websiteendpoint: s3-website-us-west-1.amazonaws.com
+      CFhostedzoneID: Z2FDTNDATAQYW2
+      CFwebsiteendpoint: cloudhsmv2.us-west-1.amazonaws.com
+    us-west-2:
+      S3hostedzoneID: Z3BJ6K6RIION7M
+      S3websiteendpoint: s3-website-us-west-2.amazonaws.com
+      CFhostedzoneID: Z2FDTNDATAQYW2
+      CFwebsiteendpoint: cloudhsmv2.us-west-2.amazonaws.com
+    ca-central-1:
+      S3hostedzoneID: Z1QDHH18159H29
+      S3websiteendpoint: s3-website.ca-central-1.amazonaws.com
+      CFhostedzoneID: Z2FDTNDATAQYW2
+      CFwebsiteendpoint: cloudhsmv2.ca-central-1.amazonaws.com          
+    eu-central-1:
+      S3hostedzoneID: Z21DNDUVLTQW6Q
+      S3websiteendpoint: s3-website.eu-central-1.amazonaws.com
+      CFhostedzoneID: Z2FDTNDATAQYW2
+      CFwebsiteendpoint: cloudhsmv2.eu-central-1.amazonaws.com
+    eu-west-1:
+      S3hostedzoneID: Z1BKCTXD74EZPE
+      S3websiteendpoint: s3-website-eu-west-1.amazonaws.com
+      CFhostedzoneID: Z2FDTNDATAQYW2
+      CFwebsiteendpoint: cloudhsmv2.eu-west-1.amazonaws.com
+    ap-northeast-1:
+      S3hostedzoneID: Z2M4EHUR26P7ZW
+      S3websiteendpoint: s3-website-ap-northeast-1.amazonaws.com
+      CFhostedzoneID: Z2FDTNDATAQYW2
+      CFwebsiteendpoint: cloudhsmv2.ap-northeast-1.amazonaws.com
+    ap-south-1:
+      S3hostedzoneID: Z11RGJOFQNVJUP
+      S3websiteendpoint: s3-website.ap-south-1.amazonaws.com
+      CFhostedzoneID: Z2FDTNDATAQYW2
+      CFwebsiteendpoint: cloudhsmv2.ap-south-1.amazonaws.com    
+    ap-southeast-1:
+      S3hostedzoneID: Z3O0J2DXBE1FTB
+      S3websiteendpoint: s3-website-ap-southeast-1.amazonaws.com
+      CFhostedzoneID: Z2FDTNDATAQYW2
+      CFwebsiteendpoint: cloudhsmv2.ap-southeast-1.amazonaws.com
+    ap-southeast-2:
+      S3hostedzoneID: Z1WCIGYICN2BYD
+      S3websiteendpoint: s3-website-ap-southeast-2.amazonaws.com
+      CFhostedzoneID: Z2FDTNDATAQYW2
+      CFwebsiteendpoint: cloudhsmv2.ap-southeast-2.amazonaws.com
+
+
+
+
 Resources:
-  S3Bucket:
+  RootBucket:
     Type: 'AWS::S3::Bucket'
     Properties:
+      BucketName: !Ref RootDomainName  
       AccessControl: PublicRead
-      BucketName: !Sub '${AppName}-website-s3-${AWS::Region}'   
       WebsiteConfiguration:
         IndexDocument: index.html
-        ErrorDocument: index.html
+        ErrorDocument: index.html #404.html
     #DeletionPolicy: Retain
-  BucketPolicy:
+  RootBucketPolicy:
     Type: 'AWS::S3::BucketPolicy'
     Properties:
       PolicyDocument:
@@ -27,12 +89,92 @@ Resources:
             Effect: Allow
             Principal: '*'
             Action: 's3:GetObject'
-            Resource: !Sub '${S3Bucket.Arn}/*'
-      Bucket: !Ref S3Bucket
+            Resource: !Sub '${RootBucket.Arn}/*'
+      Bucket: !Ref RootBucket
+
+  WWWBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'www.${RootDomainName}'
+         # - www.${Domain}
+         # - Domain: !Sub RootDomainName
+      AccessControl: BucketOwnerFullControl
+      WebsiteConfiguration:
+        RedirectAllRequestsTo:
+          HostName: !Ref RootBucket    
+          # add the https protocol here
+
+
+
+  CDN:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Comment: CDN for S3-backed website
+        Aliases:
+        - !Sub ${RootDomainName}  # must match Rt53 A record
+        CacheBehaviors: []
+        # DefaultRootObject: index.html    -- interferes with redirect if set
+        DefaultCacheBehavior:
+          TargetOriginId: !Ref RootBucket
+          ViewerProtocolPolicy: redirect-to-https
+          MinTTL: 0
+          MaxTTL: 31536000
+          DefaultTTL: 60 # Originally 86400, setting to 60 for development setting.
+          AllowedMethods:
+          - HEAD
+          - GET
+          CachedMethods:
+          - HEAD
+          - GET
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+        Enabled: true      
+        Origins:
+        - DomainName: !Sub
+            - '${RootDomainName}.${S3WebsiteEndpoint}'
+            - S3WebsiteEndpoint: !FindInMap [ RegionMap, !Ref 'AWS::Region', S3websiteendpoint]
+          Id: !Ref RootBucket
+          CustomOriginConfig:
+            HTTPPort: '80'
+            HTTPSPort: '443'
+            OriginProtocolPolicy: http-only
+        PriceClass: PriceClass_All
+        ViewerCertificate:
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1
+          AcmCertificateArn: !ImportValue Neo-SSLCertificateArn
+
+
+
+  DNS:
+    DependsOn:
+    - CDN   
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: !Sub '${RootDomainName}.'
+      Comment: Zone apex alias.
+      RecordSets:
+      - 
+        Name: !Sub '${RootDomainName}' #Must Map to the S3 Website Bucket Name or CloudFront Alternate Domain Name
+        Type: A
+        AliasTarget:
+          HostedZoneId: !FindInMap [ RegionMap, !Ref 'AWS::Region', CFhostedzoneID]
+          DNSName: !GetAtt CDN.DomainName
+      - 
+        Name: !Sub 'www.${RootDomainName}'
+        Type: A
+        AliasTarget:
+          HostedZoneId: !FindInMap [ RegionMap, !Ref 'AWS::Region', S3hostedzoneID]
+          DNSName: !FindInMap [ RegionMap, !Ref 'AWS::Region', S3websiteendpoint]
+
+
 Outputs:
   WebsiteURL:
-    Value: !Sub '${S3Bucket.WebsiteURL}'
+    Value: !Sub '${RootBucket.WebsiteURL}'
     Description: URL for website hosted on S3
-  S3BucketSecureURL:
-    Value: !Sub 'https://{S3Bucket.DomainName}'
-    Description: Name of S3 bucket to hold website content
+  # S3BucketSecureURL:
+  #   Value: !Sub 'https://{RootBucket.DomainName}'
+  #   Description: Name of S3 bucket to hold website content

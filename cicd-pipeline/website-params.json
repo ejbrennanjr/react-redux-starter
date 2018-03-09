@@ -1,6 +1,6 @@
 {
     "Parameters" : {
-      "AppName" : "react-redux-serverless"
+      "Neo-SSLCertificateArn" : "edbrennan.guru"
     },
     "StackPolicy" : {
       "Statement" : [

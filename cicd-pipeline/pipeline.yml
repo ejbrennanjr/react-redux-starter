@@ -1,9 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Continuous Delivery Pipeline'
 Parameters: 
-  AppName: 
-    Description: 'The name of the application'
-    Type: String 
+  DomainName:
+    Description: Domain name for your website (example.com)
+    Type: String
   GitHubUser: 
     Description: 'The user of the GitHub repository, must have access to the GitHubToken'
     Type: String
@@ -33,7 +33,9 @@ Resources:
     Description: 'S3 Bucket for storing build artifacts'
     Type: 'AWS::S3::Bucket'
     Properties: 
-      BucketName: !Sub '${AppName}-build-s3-${AWS::Region}'      
+      BucketName: !Sub 
+        - '${AWS::StackName}-buildartifacts-s3-${NoSpaceRegion}'
+        - NoSpaceRegion: !Join ['', !Split ['-', ${AWS::Region}]]     
       VersioningConfiguration:
         Status: Enabled
   S3ArtifactBucketPolicy:
@@ -92,7 +94,7 @@ Resources:
           - sts:AssumeRole
       Path: /
       Policies:
-        - PolicyName: !Sub '${AppName}-codebuild-policy-iam-${AWS::Region}'
+        - PolicyName: !Sub '${AWS::StackName}-cbuild-policy-iam'
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
@@ -111,7 +113,7 @@ Resources:
                 Resource: 
                 - arn:aws:s3:::codepipeline-us-east-1-*
                 - !Sub 'arn:aws:s3:::*'
-      RoleName: !Sub '${AppName}-codebuild-role-iam-${AWS::Region}'
+      RoleName: !Sub '${AWS::StackName}-cbuild-role-iam'
   CodeBuildCompileWebsite:
     DependsOn:
     - CodeBuildIAMRole  
@@ -124,7 +126,9 @@ Resources:
         ComputeType: 'BUILD_GENERAL1_SMALL'
         Image: 'aws/codebuild/nodejs:7.0.0'
         Type: 'LINUX_CONTAINER'
-      Name: !Sub '${AppName}-compilewebsite-codebuild-${AWS::Region}'
+      Name: !Sub 
+        - '${AWS::StackName}-compile-cbuild-${NoSpaceRegion}'
+        - NoSpaceRegion: !Join ['', !Split ['-', ${AWS::Region}]]
       ServiceRole: !Sub '${CodeBuildIAMRole.Arn}'
       Source:
         BuildSpec: buildspec.yml
@@ -145,16 +149,20 @@ Resources:
         EnvironmentVariables: 
         - Name: S3ArtifactBucketName
           Type: PLAINTEXT
-          Value: !Sub '${AppName}-build-s3-${AWS::Region}'
+          Value: !Sub 
+            - '${AWS::StackName}-buildartifacts-s3-${NoSpaceRegion}'
+            - NoSpaceRegion: !Join ['', !Split ['-', ${AWS::Region}]]
         - Name: S3WebsiteBucketName
           Type: PLAINTEXT
           # This value is specified in the website.cmf.yml file
           # Making the presumption of the name here based on the naming convention we have established
-          Value: !Sub '${AppName}-website-s3-${AWS::Region}'
+          Value: !Ref DomainName 
       Source:
         BuildSpec: buildspec-deploy.yml
         Type: CODEPIPELINE
-      Name: !Sub '${AppName}-deploytos3-codebuild-${AWS::Region}'
+      Name: !Sub 
+        - '${AWS::StackName}-deploy-cbuild-${NoSpaceRegion}'
+        - NoSpaceRegion: !Join ['', !Split ['-', ${AWS::Region}]]
       ServiceRole: !Sub '${CodeBuildIAMRole.Arn}'
       TimeoutInMinutes: 5
 
@@ -178,7 +186,7 @@ Resources:
           Action: sts:AssumeRole
       Path: /
       Policies:
-        - PolicyName: !Sub '${AppName}-cloudformation-policy-iam-${AWS::Region}'
+        - PolicyName: !Sub '${AWS::StackName}-cform-policy-iam'
           PolicyDocument:
             Statement:
             - Action: ["s3:*"]
@@ -202,7 +210,7 @@ Resources:
             - Action: ["cloudformation:CreateChangeSet"]
               Resource: !Sub "arn:aws:cloudformation:${AWS::Region}:aws:transform/Serverless-2016-10-31"
               Effect: Allow
-      RoleName: !Sub '${AppName}-cloudformation-role-iam-${AWS::Region}'      
+      RoleName: !Sub '${AWS::StackName}-cform-role-iam'       
 
 
 
@@ -233,7 +241,7 @@ Resources:
             - 'sts:AssumeRole'
       Policies:
         # https://docs.aws.amazon.com/codepipeline/latest/userguide/how-to-custom-role.html
-        - PolicyName: !Sub '${AppName}-codepipeline-policy-iam-${AWS::Region}'
+        - PolicyName: !Sub '${AWS::StackName}-cpipe-policy-iam'
           PolicyDocument:
             Statement:
             - Action:
@@ -302,10 +310,16 @@ Resources:
               Effect: Allow
             Version: '2012-10-17'
       Path: '/'
-      RoleName: !Sub '${AppName}-codepipeline-role-iam-${AWS::Region}'      
+      RoleName: !Sub '${AWS::StackName}-cpipe-role-iam'          
+
+
+
   CodePipeline:
     Type: 'AWS::CodePipeline::Pipeline'
     Properties: 
+      Name: !Sub 
+        - '${AWS::StackName}-cpipe-${NoSpaceRegion}'
+        - NoSpaceRegion: !Join ['', !Split ['-', ${AWS::Region}]]
       ArtifactStore:
         Location: !Ref S3ArtifactBucket
         Type: S3
@@ -341,7 +355,9 @@ Resources:
             OutputArtifacts:
             - Name: buildoutput
             Configuration:
-              ProjectName: !Sub '${AppName}-compilewebsite-codebuild-${AWS::Region}'
+              ProjectName: !Sub 
+                - '${AWS::StackName}-compile-cbuild-${NoSpaceRegion}'
+                - NoSpaceRegion: !Join ['', !Split ['-', ${AWS::Region}]]
             RunOrder: 1
         # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-action-reference.html    
         - Name: Deploy
@@ -356,7 +372,11 @@ Resources:
               Provider: CloudFormation
             OutputArtifacts: []
             Configuration:
-              StackName: !Sub "${AppName}-website-cloudformation-${AWS::Region}"
+              StackName: !Sub 
+                - '${AppName}-www-${WebsiteName}-${Instance}'
+                - AppName: !Select [0, !Split ['-', ${AWS::StackName}]]
+                  WebsiteName: !Select [2, !Split ['-', ${AWS::StackName}]]
+                  Instance: !Select [3, !Split ['-', ${AWS::StackName}]]
               ActionMode: CHANGE_SET_REPLACE
               RoleArn: !Sub '${CloudFormationIAMRole.Arn}'
               ChangeSetName: pipeline-changeset
@@ -373,7 +393,11 @@ Resources:
               Provider: CloudFormation
             OutputArtifacts: []
             Configuration:
-              StackName: !Sub "${AppName}-website-cloudformation-${AWS::Region}"
+              StackName: !Sub 
+                - '${AppName}-www-${WebsiteName}-${Instance}'
+                - AppName: !Select [0, !Split ['-', ${AWS::StackName}]]
+                  WebsiteName: !Select [2, !Split ['-', ${AWS::StackName}]]
+                  Instance: !Select [3, !Split ['-', ${AWS::StackName}]]
               ActionMode: CHANGE_SET_EXECUTE
               ChangeSetName: pipeline-changeset
             RunOrder: 2
@@ -387,7 +411,9 @@ Resources:
               Provider: CodeBuild
             OutputArtifacts: []
             Configuration:
-              ProjectName: !Sub '${AppName}-deploytos3-codebuild-${AWS::Region}'
+              ProjectName: !Sub 
+                - '${AWS::StackName}-deploy-cbuild-${NoSpaceRegion}'
+                - NoSpaceRegion: !Join ['', !Split ['-', ${AWS::Region}]]
             RunOrder: 3
 
 Outputs:
