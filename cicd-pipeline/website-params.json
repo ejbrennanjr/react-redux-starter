@@ -1,6 +1,6 @@
 {
     "Parameters" : {
-      "Neo-SSLCertificateArn" : "edbrennan.guru"
+      "RootDomainName" : "edbrennan.guru"
     },
     "StackPolicy" : {
       "Statement" : [
