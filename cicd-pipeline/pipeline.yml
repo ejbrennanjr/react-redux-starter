@@ -227,22 +227,22 @@ Resources:
               Resource: "*"
               Effect: Allow
             - Action:
-              - route53:*
-              - route53domains:*
-              - cloudfront:ListDistributions
-              - elasticloadbalancing:DescribeLoadBalancers
-              - elasticbeanstalk:DescribeEnvironments
-              - s3:ListBucket
-              - s3:GetBucketLocation
-              - s3:GetBucketWebsite
-              - ec2:DescribeVpcs
-              - ec2:DescribeRegions
-              - sns:ListTopics
-              - sns:ListSubscriptionsByTopic
-              - cloudwatch:DescribeAlarms
-              - cloudwatch:GetMetricStatistics
-            Resource: "*"
-            Effect: Allow
+                - route53:*
+                - route53domains:*
+                - cloudfront:ListDistributions
+                - elasticloadbalancing:DescribeLoadBalancers
+                - elasticbeanstalk:DescribeEnvironments
+                - s3:ListBucket
+                - s3:GetBucketLocation
+                - s3:GetBucketWebsite
+                - ec2:DescribeVpcs
+                - ec2:DescribeRegions
+                - sns:ListTopics
+                - sns:ListSubscriptionsByTopic
+                - cloudwatch:DescribeAlarms
+                - cloudwatch:GetMetricStatistics
+              Resource: "*"
+              Effect: Allow
 
       RoleName: !Sub '${AWS::StackName}-cform-role-iam'       
 
