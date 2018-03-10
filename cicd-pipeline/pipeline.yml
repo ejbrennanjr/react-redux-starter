@@ -1,8 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Continuous Delivery Pipeline'
-Parameters: 
+
+Parameters:
   DomainName:
-    Description: Domain name for your website (example.com)
+    Description: Domain name for your website
     Type: String
   GitHubUser: 
     Description: 'The user of the GitHub repository, must have access to the GitHubToken'
@@ -35,7 +36,7 @@ Resources:
     Properties: 
       BucketName: !Sub 
         - '${AWS::StackName}-buildartifacts-s3-${NoSpaceRegion}'
-        - NoSpaceRegion: !Join ['', !Split ['-', ${AWS::Region}]]     
+        - NoSpaceRegion: !Join ['', !Split ['-', !Ref 'AWS::Region']]     
       VersioningConfiguration:
         Status: Enabled
   S3ArtifactBucketPolicy:
@@ -128,7 +129,7 @@ Resources:
         Type: 'LINUX_CONTAINER'
       Name: !Sub 
         - '${AWS::StackName}-compile-cbuild-${NoSpaceRegion}'
-        - NoSpaceRegion: !Join ['', !Split ['-', ${AWS::Region}]]
+        - NoSpaceRegion: !Join ['', !Split ['-', !Ref 'AWS::Region']]
       ServiceRole: !Sub '${CodeBuildIAMRole.Arn}'
       Source:
         BuildSpec: buildspec.yml
@@ -151,7 +152,7 @@ Resources:
           Type: PLAINTEXT
           Value: !Sub 
             - '${AWS::StackName}-buildartifacts-s3-${NoSpaceRegion}'
-            - NoSpaceRegion: !Join ['', !Split ['-', ${AWS::Region}]]
+            - NoSpaceRegion: !Join ['', !Split ['-', !Ref 'AWS::Region']]
         - Name: S3WebsiteBucketName
           Type: PLAINTEXT
           # This value is specified in the website.cmf.yml file
@@ -162,7 +163,7 @@ Resources:
         Type: CODEPIPELINE
       Name: !Sub 
         - '${AWS::StackName}-deploy-cbuild-${NoSpaceRegion}'
-        - NoSpaceRegion: !Join ['', !Split ['-', ${AWS::Region}]]
+        - NoSpaceRegion: !Join ['', !Split ['-', !Ref 'AWS::Region']]
       ServiceRole: !Sub '${CodeBuildIAMRole.Arn}'
       TimeoutInMinutes: 5
 
@@ -319,7 +320,7 @@ Resources:
     Properties: 
       Name: !Sub 
         - '${AWS::StackName}-cpipe-${NoSpaceRegion}'
-        - NoSpaceRegion: !Join ['', !Split ['-', ${AWS::Region}]]
+        - NoSpaceRegion: !Join ['', !Split ['-', !Ref 'AWS::Region']]
       ArtifactStore:
         Location: !Ref S3ArtifactBucket
         Type: S3
@@ -357,7 +358,7 @@ Resources:
             Configuration:
               ProjectName: !Sub 
                 - '${AWS::StackName}-compile-cbuild-${NoSpaceRegion}'
-                - NoSpaceRegion: !Join ['', !Split ['-', ${AWS::Region}]]
+                - NoSpaceRegion: !Join ['', !Split ['-', !Ref 'AWS::Region']]
             RunOrder: 1
         # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-action-reference.html    
         - Name: Deploy
@@ -413,7 +414,7 @@ Resources:
             Configuration:
               ProjectName: !Sub 
                 - '${AWS::StackName}-deploy-cbuild-${NoSpaceRegion}'
-                - NoSpaceRegion: !Join ['', !Split ['-', ${AWS::Region}]]
+                - NoSpaceRegion: !Join ['', !Split ['-', !Ref 'AWS::Region']]
             RunOrder: 3
 
 Outputs:
