@@ -218,6 +218,14 @@ Resources:
             - Action: ["cloudformation:CreateChangeSet"]
               Resource: !Sub "arn:aws:cloudformation:${AWS::Region}:aws:transform/Serverless-2016-10-31"
               Effect: Allow
+            - Action:
+                - acm:ListCertificates
+                - cloudfront:*
+                - iam:ListServerCertificates
+                - waf:ListWebACLs
+                - waf:GetWebACL
+              Resource: "*"
+              Effect: Allow
       RoleName: !Sub '${AWS::StackName}-cform-role-iam'       
 
 
