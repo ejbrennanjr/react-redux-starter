@@ -200,10 +200,10 @@ Resources:
               Resource: !Sub "arn:aws:apigateway:${AWS::Region}::*"
               Effect: Allow
             - Action: ["iam:GetRole", "iam:CreateRole", "iam:DeleteRole"]
-              Resource: !Sub "arn:aws:iam::${AWS::AccountId}:role/${AppName}-*"
+              Resource: !Sub "arn:aws:iam::${AWS::AccountId}:role/*"
               Effect: Allow
             - Action: ["iam:AttachRolePolicy", "iam:DetachRolePolicy"]
-              Resource: !Sub "arn:aws:iam::${AWS::AccountId}:role/${AppName}-*"
+              Resource: !Sub "arn:aws:iam::${AWS::AccountId}:role/*"
               Effect: Allow
             - Action: ["iam:PassRole"]
               Resource: ["*"]
@@ -375,9 +375,9 @@ Resources:
             Configuration:
               StackName: !Sub 
                 - '${AppName}-www-${WebsiteName}-${Instance}'
-                - AppName: !Select [0, !Split ['-', ${AWS::StackName}]]
-                  WebsiteName: !Select [2, !Split ['-', ${AWS::StackName}]]
-                  Instance: !Select [3, !Split ['-', ${AWS::StackName}]]
+                - AppName: !Select [0, !Split ['-', !Ref 'AWS::StackName']]
+                  WebsiteName: !Select [2, !Split ['-', !Ref 'AWS::StackName']]
+                  Instance: !Select [3, !Split ['-', !Ref 'AWS::StackName']]
               ActionMode: CHANGE_SET_REPLACE
               RoleArn: !Sub '${CloudFormationIAMRole.Arn}'
               ChangeSetName: pipeline-changeset
@@ -396,9 +396,9 @@ Resources:
             Configuration:
               StackName: !Sub 
                 - '${AppName}-www-${WebsiteName}-${Instance}'
-                - AppName: !Select [0, !Split ['-', ${AWS::StackName}]]
-                  WebsiteName: !Select [2, !Split ['-', ${AWS::StackName}]]
-                  Instance: !Select [3, !Split ['-', ${AWS::StackName}]]
+                - AppName: !Select [0, !Split ['-', !Ref 'AWS::StackName']]
+                  WebsiteName: !Select [2, !Split ['-', !Ref 'AWS::StackName']]
+                  Instance: !Select [3, !Split ['-', !Ref 'AWS::StackName']]
               ActionMode: CHANGE_SET_EXECUTE
               ChangeSetName: pipeline-changeset
             RunOrder: 2
