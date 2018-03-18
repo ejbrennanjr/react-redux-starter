@@ -29,7 +29,7 @@ export function loadFriends() {
           .catch(error => {
             alert(`Caught Error=${error}`);
             throw(error); 
-          })
+          });
 
 
             // .then(response => {

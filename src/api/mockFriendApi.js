@@ -1,4 +1,5 @@
 import delay from './delay';
+import {apiUrl} from './configureAPI'; 
 
 // This file mocks a web API by working with the hard-coded data below.
 // It uses setTimeout to simulate the delay of an AJAX call.
@@ -32,13 +33,12 @@ const generateId = (friend) => {
 
 class FriendApi {
   static getAllFriends() {
-
-    return fetch('https://api.edbrennan.guru/friends', {
+    return fetch(`${apiUrl}/friends`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
       }
-    })
+    });
       // .then(response => {
       //   return response.json();
       // })
