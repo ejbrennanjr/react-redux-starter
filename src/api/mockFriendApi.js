@@ -5,23 +5,23 @@ import {apiUrl} from '../configuration/config';
 // This file mocks a web API by working with the hard-coded data below.
 // It uses setTimeout to simulate the delay of an AJAX call.
 // All calls return promises.
-// const friends = [
-//   {
-//     id: "Augie-Chung",
-//     name: "Augie Chung1",
-//     categoryId: "friends"
-//   },
-//   {
-//     id: "Barry-Fichtner",
-//     name: "Barry Fichtner",
-//     categoryId: "colleagues"
-//   },
-//   {
-//     id: "Daniel-Brennan",
-//     name: "Daniel Brennan",
-//     categoryId: "family"
-//   },  
-// ];
+const friends = [
+  {
+    id: "Augie-Chung",
+    name: "Augie Chung1",
+    categoryId: "friends"
+  },
+  {
+    id: "Barry-Fichtner",
+    name: "Barry Fichtner",
+    categoryId: "colleagues"
+  },
+  {
+    id: "Daniel-Brennan",
+    name: "Daniel Brennan",
+    categoryId: "family"
+  },  
+];
 
 function replaceAll(str, find, replace) {
   return str.replace(new RegExp(find, 'g'), replace);
