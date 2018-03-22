@@ -1,5 +1,12 @@
 import delay from './delay';
-import {apiUrl} from './configureAPI'; 
+// import {apiUrl} from './configureAPI'; 
+
+if(process.env.NODE_ENV === 'production') {
+  const apiUrl = 'https://edbrennan.guru';
+} else {
+  const apiUrl = 'http://localhost:3001';
+}
+
 
 // This file mocks a web API by working with the hard-coded data below.
 // It uses setTimeout to simulate the delay of an AJAX call.
@@ -30,6 +37,9 @@ function replaceAll(str, find, replace) {
 const generateId = (friend) => {
   return replaceAll(friend.name, ' ', '-');
 };
+
+
+
 
 class FriendApi {
   static getAllFriends() {
